@@ -1,0 +1,44 @@
+{
+  "name": "boidiverse",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "loaddependencies:js": "node ./node_modules/frontend-dependencies/index.js",
+    "devbuild:js": "npm run loaddependencies:js && webpack --mode=development",
+    "watch:js": "onchange src/js -- npm run devbuild:js",
+    "serve": "browser-sync start --server \"dist\" --files \"dist\"",
+    "devrun": "run-p serve watch:*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sebamigo/Boidiverse.git"
+  },
+  "author": "Sebastian Paul Arndt",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sebamigo/Boidiverse/issues"
+  },
+  "homepage": "https://github.com/sebamigo/Boidiverse#readme",
+  "devDependencies": {
+    "@babel/core": "^7.13.10",
+    "@babel/preset-env": "^7.13.12",
+    "babel-loader": "^8.2.2",
+    "browser-sync": "^2.26.14",
+    "frontend-dependencies": "^2.0.0",
+    "npm-run-all": "^4.1.5",
+    "onchange": "^7.1.0",
+    "victor": "^1.1.0",
+    "webpack": "^5.27.2",
+    "webpack-cli": "^4.5.0"
+  },
+  "frontendDependencies": {
+    "target": "lib/js/victor/",
+    "packages": {
+      "victor": {
+        "version": "1.1.0",
+        "src": "index.js"
+      }
+    }
+  }
+}
