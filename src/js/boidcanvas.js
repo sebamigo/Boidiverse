@@ -1,4 +1,5 @@
 import {Boidiverse} from "./boidiverse";
+import {Boidcontroller} from "./boidcontroller";
 
 export var Boidcanvas = function (canvas_element) {
 
@@ -6,7 +7,8 @@ export var Boidcanvas = function (canvas_element) {
         _this.canvas.width = canvas_size.x;
         _this.canvas.height = canvas_size.y;
         _this.boidiverse = new Boidiverse();
-        //_this.boidcontroller = new Boidcontroller();
+        _this.boidiverse.init(canvas_size.x,canvas_size.y);
+        _this.boidcontroller = new Boidcontroller(_this.boidiverse);
 
         _this.loop();
     }
@@ -33,7 +35,7 @@ export var Boidcanvas = function (canvas_element) {
                 _this.updateBounds();
                 _this.clearCanvas();
                 //TODO
-                //_this.boidcontroller.update(timedelta);
+                _this.boidcontroller.update(timedelta);
                 _this.boidiverse.draw(_this.ctx);
                 lastTime=now;
             }
@@ -43,11 +45,11 @@ export var Boidcanvas = function (canvas_element) {
 
     this.updateBounds = function () {
         let w = window.innerWidth;
-        let h = window.innerWidth;
+        let h = window.innerHeight;
         if(w !== _this.canvas.width || h !== _this.canvas.height) {
             _this.canvas.width = w;
             _this.canvas.height = h;
-            //_this.boidiverse.chunkgrid.buildChunks(_this.cw, _this.ch);
+            _this.boidiverse.boidstorage.buildChunks(w, h);
         }
     }
 
