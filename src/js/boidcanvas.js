@@ -20,9 +20,15 @@ export var Boidcanvas = function (canvas_element) {
 
     this.loop = function () {
         var lastTime;
-        var requiredElapsed=1000/60;
+        var requiredElapsed=0;
+        let totalFrames = 0;
+        let startTime;
+
 
         var loopIt = function(now){
+            if(startTime === undefined) {
+                startTime = now;
+            }
             if (_this.stop) { return; }
 
             requestAnimationFrame(loopIt);
@@ -30,14 +36,21 @@ export var Boidcanvas = function (canvas_element) {
             if (!lastTime) { lastTime = now; }
             var elapsed=now-lastTime;
 
-            if(elapsed>requiredElapsed){
+            if(elapsed>requiredElapsed) {
                 var timedelta = (elapsed/1000);
                 _this.updateBounds();
                 _this.clearCanvas();
                 //TODO
-                _this.boidcontroller.update(timedelta);
+                _this.boidcontroller.update(timedelta, _this.ctx);
                 _this.boidiverse.draw(_this.ctx);
                 lastTime=now;
+
+                let fps = (totalFrames) / ((now - startTime)/1000);
+                //console.log(totalFrames + " " + now + " "+startTime)
+
+                totalFrames++;
+
+                _this.drawFPS(_this.ctx, fps);
             }
         };
         loopIt();
@@ -57,5 +70,9 @@ export var Boidcanvas = function (canvas_element) {
         _this.ctx.globalCompositeOperation = 'destination-over';
         _this.ctx.clearRect(0, 0, _this.canvas.width, _this.canvas.height); // clear canvas
     };
+
+    this.drawFPS = function (ctx, fps) {
+        ctx.fillText("fps: "+ Math.round(fps), 5, 30);
+    }
     
 }

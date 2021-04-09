@@ -1,6 +1,7 @@
-import Vector from "../../lib/js/victor/index";
+import Vector from "victor";
 import {DEBUG_CHUNKSIZE} from "./parameters";
-import {distance} from "./misc";
+import {distance, radToDeg} from "./misc";
+import * as parameter from "./parameters";
 
 export var BoidStorage = function () {
     var _this = this;
@@ -9,12 +10,15 @@ export var BoidStorage = function () {
 
     this.chunks = [];
     this.chunkSize = DEBUG_CHUNKSIZE;
+    _this.bounds_vec = new Vector(0,0);
 
     this.init = function (canvas_width, canvas_height) {
+        _this.bounds_vec = new Vector(canvas_width, canvas_height);
         _this.buildChunks(canvas_width, canvas_height);
     }
 
     this.buildChunks = function (canvas_width, canvas_height) {
+        _this.bounds_vec = new Vector(canvas_width, canvas_height);
         _this.chunks = [];
         for (let x = 0; x < canvas_width/_this.chunkSize; x++) {
             let y_line = [];
@@ -45,12 +49,14 @@ export var BoidStorage = function () {
         _this.removeFromChunk(c_boid);
     }
 
+    //TODO: change c_boid to boid!!
     this.forEachBoid = function (iterateFunction) {
         _this.boids.forEach(iterateFunction);
     }
 
-    this.getNearbyBoids = function (boid_id, maxDistance) {
+    this.getBoidsInNeighborhood = function (boid_id, maxDistance, ctx) {
         let c_boid = _this.boids.get(boid_id);
+
         let arr = [];
         let overflow = Math.ceil(maxDistance/_this.chunkSize);
         for (let x = 0 - (overflow - 1); x <= 2 + (overflow - 1); x++) {
@@ -63,8 +69,35 @@ export var BoidStorage = function () {
                         if(comp_boid_id !== c_boid.b.id) {
                             let comp_c_boid = _this.boids.get(comp_boid_id);
                             let dis = distance(c_boid.b.pos_vec.x, c_boid.b.pos_vec.y,comp_c_boid.b.pos_vec.x, comp_c_boid.b.pos_vec.y);
-                            if (dis <= maxDistance) {
-                                arr.push({boid: comp_c_boid.b, distance: dis});
+                            let rel_pos = comp_c_boid.b.pos_vec.clone().subtract(c_boid.b.pos_vec);
+                            let angle = Math.acos(rel_pos.dot(c_boid.b.direction.getDirection_vector()) / (rel_pos.length() * c_boid.b.direction.getDirection_vector().length()));
+                            if (dis <= maxDistance && radToDeg(angle) <= 140) {
+                                arr.push({b: comp_c_boid.b, distance: dis});
+
+                                /*if(c_boid.b.id === 0 && comp_c_boid.b.id === 5) {
+                                    console.log(rel_pos);
+                                    console.log(radToDeg(angle));
+                                }*/
+
+                                if(false && c_boid.b.id === 0) {
+                                    ctx.strokeStyle = "green";
+                                    ctx.beginPath();
+                                    ctx.moveTo(c_boid.b.pos_vec.x, c_boid.b.pos_vec.y);
+                                    ctx.lineTo(comp_c_boid.b.pos_vec.x, comp_c_boid.b.pos_vec.y);
+                                    ctx.stroke();
+                                    ctx.strokeStyle = "black";
+                                }
+                            }
+                            else
+                            {
+                                if(false && c_boid.b.id === 0) {
+                                    ctx.strokeStyle = "red";
+                                    ctx.beginPath();
+                                    ctx.moveTo(c_boid.b.pos_vec.x, c_boid.b.pos_vec.y);
+                                    ctx.lineTo(comp_c_boid.b.pos_vec.x, comp_c_boid.b.pos_vec.y);
+                                    ctx.stroke();
+                                    ctx.strokeStyle = "black";
+                                }
                             }
                         }
                     }

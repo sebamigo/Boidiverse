@@ -1,4 +1,4 @@
-import Vector from "../../lib/js/victor/index";
+import Vector from "victor";
 import {VECTOR_X} from "./constants";
 
 export var Direction = function (direction_vector) {
@@ -12,10 +12,19 @@ export var Direction = function (direction_vector) {
         return ((direction_vector.cross(VECTOR_X) < 0.0)? 1: -1);
     }
 
+    this.update = function () {
+        _this.angle = _this.calculateAngle(_this.dir_vec);
+        _this.direction = _this.calculateDirection(_this.dir_vec);
+    }
+
     this.setDirection_vector = function (direction_vector) {
         _this.dir_vec = direction_vector;
-        _this.angle = calculateAngle(direction_vector);
-        _this.direction = calculateDirection(direction_vector);
+        _this.update();
+    }
+
+    this.rotate = function (angle) {
+        _this.dir_vec.rotateDeg(angle);
+        _this.update();
     }
 
     this.getDirection_vector = function () {
@@ -31,6 +40,5 @@ export var Direction = function (direction_vector) {
     }
 
     this.dir_vec = direction_vector;
-    this.angle = _this.calculateAngle(direction_vector);
-    this.direction = _this.calculateDirection(direction_vector);
+    _this.update();
 }

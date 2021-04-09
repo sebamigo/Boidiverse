@@ -1,4 +1,4 @@
-import Vector from "../../lib/js/victor/index";
+import Vector from "victor";
 import * as constants from "./constants";
 import {Direction} from "./direction";
 
@@ -10,6 +10,7 @@ export var Boid = function (global_position_vector, direction_vector) {
     this.id = COUNT_ID++;
     this.pos_vec = global_position_vector;
     this.direction = new Direction(direction_vector);
+    this.rotation_speed = constants.BOID_DEFAULT_ROTATION_SPEED;
     this.speed_vec = new Vector(constants.BOID_DEFAULT_SPEED_X, constants.BOID_DEFAULT_SPEED_Y);
 
     this.color = "#000000"
