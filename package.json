@@ -6,6 +6,7 @@
   "scripts": {
     "loaddependencies:js": "node ./node_modules/frontend-dependencies/index.js",
     "devbuild:js": "webpack --mode=development",
+    "build:js": "webpack --mode=production",
     "watch:js": "onchange src/js -- npm run devbuild:js",
     "serve": "browser-sync start --server \"dist\" --files \"dist\"",
     "devrun": "run-p serve watch:*"
